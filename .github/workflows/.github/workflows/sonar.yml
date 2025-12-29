@@ -10,13 +10,31 @@ jobs:
   sonar:
     runs-on: ubuntu-latest
     steps:
+      # Checkout repository
       - uses: actions/checkout@v3
+
+      # Setup Node.js
       - uses: actions/setup-node@v3
         with:
           node-version: 20
+
+      # Install dependencies
       - run: npm ci
+
+      # Run ESLint
       - run: npm run lint
+
+      # Run tests with coverage
       - run: npm run test:coverage
+
+      # --- Security Checks ---
+      - name: Run npm audit
+        run: npm audit --audit-level=high
+
+      - name: Run Snyk test
+        run: npm run snyk:test
+
+      # SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
