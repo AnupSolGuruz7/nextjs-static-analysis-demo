@@ -1,0 +1,26 @@
+name: SonarCloud Scan
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:coverage
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectKey: nextjs-static-analysis-demo
+          organization: your-org-name
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
